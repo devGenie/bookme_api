@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
   end
 
   it "is valid with valid attributes" do
-    expect(User.new).to be_valid
+    expect(User.new(first_name:"Onen")).to be_valid
   end
 
   it "is not valid without a name" do 
