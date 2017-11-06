@@ -8,15 +8,16 @@ require 'rspec/rails'
 require 'database_cleaner'
 
   # configure shoulder matchers to use rspec as test framework and fullmatcher libraries for rails
-Shoulda:Matchers.configure do |config|
+Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     with.test_framework :rspec
     with.library :rails
   end
+end
 
-Rspec.configuration do |config|
+RSpec.configure do |config|
   # Add factorygirl methods
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   # Truncate all tables but use the fastest transaction
   config.before(:suite) do
