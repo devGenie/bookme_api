@@ -6,11 +6,17 @@ RSpec.describe User, type: :model do
   end
 
   it "is valid with valid attributes" do
-    expect(User.new(first_name:"Onen")).to be_valid
+    user = FactoryBot.create(:user)
+    expect(user).to be_valid
   end
 
   it "is not valid without a name" do 
     user = User.new(first_name:nil)
+    expect(user).to_not be_valid
+  end
+
+  it "is not valid with missing attributes" do
+    user = User.new(first_name:"Onen")
     expect(user).to_not be_valid
   end
 end
