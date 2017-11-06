@@ -20,4 +20,10 @@ RSpec.describe User, type: :model do
     subject.first_name ="Onen"
     expect(subject).to_not be_valid
   end
+  
+  it "is not valid if duplicate" do
+    original_user = FactoryBot.create(:user)
+    duplicate = FactoryBot.create(:user)
+    expect(duplicate).to_not be_valid
+  end
 end
