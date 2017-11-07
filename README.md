@@ -1,24 +1,4 @@
-# README
+[![Coverage Status](https://coveralls.io/repos/github/devGenie/bookme_api/badge.svg?branch=user-specs)](https://coveralls.io/github/devGenie/bookme_api?branch=user-specs) [![Build Status](https://travis-ci.org/devGenie/bookme_api.svg?branch=master)](https://travis-ci.org/devGenie/bookme_api)
+# BOOK ME API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Book me is a service to help library attendands manage their catalogues and borrower data. 
