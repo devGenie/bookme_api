@@ -1,4 +1,6 @@
 require 'rails_helper'
+require 'coveralls'
+Coveralls.wear!
 
 RSpec.describe User, type: :model do
   subject { described_class.new(first_name:"Onen",
