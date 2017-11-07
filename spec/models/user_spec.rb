@@ -35,4 +35,6 @@ RSpec.describe User, type: :model do
     duplicate = subject
     expect(duplicate).to_not be_valid
   end
+
+  it { should have_many(:subscriptions).dependent(:destroy) }
 end
