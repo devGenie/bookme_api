@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171106101509) do
+ActiveRecord::Schema.define(version: 20171107094422) do
 
   create_table "admins", force: :cascade do |t|
     t.integer "user_id"
@@ -40,10 +40,46 @@ ActiveRecord::Schema.define(version: 20171106101509) do
     t.index ["author_id"], name: "index_books_on_author_id"
   end
 
+  create_table "borrowed_books", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "book_id"
+    t.datetime "date_borrowed", null: false
+    t.datetime "date_due", null: false
+    t.boolean "return_status", default: false
+    t.string "comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["book_id"], name: "index_borrowed_books_on_book_id"
+    t.index ["user_id"], name: "index_borrowed_books_on_user_id"
+  end
+
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "libraries", force: :cascade do |t|
+    t.string "name"
+    t.string "location"
+    t.string "image_url"
+    t.string "contacts"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_libraries_on_user_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "library_id", null: false
+    t.datetime "date_subscribed", null: false
+    t.datetime "date_unsubscribed"
+    t.boolean "subscription_status", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["library_id"], name: "index_subscriptions_on_library_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
