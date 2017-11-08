@@ -30,4 +30,24 @@ RSpec.describe "Users API", type: :request do
             end
         end
     end
+
+    describe 'POST /users' do
+        let(:valid_fields) { { first_name:"Onen", 
+                               last_name:"Julius", 
+                               email:"jonen54@gmail.com",
+                               password:"256thjuly",
+                               repeat_password:"256thjuly"} }
+
+        context('when the request is valis') do
+            before{ post '/users', params:valid_fields }
+
+            it 'creates a user' do
+                expect(json['first_name']).to eq("Onen")
+            end
+
+            it 'returns status 201' do
+                expect(response).to have_http_status(201)
+            end
+        end
+    end
 end
