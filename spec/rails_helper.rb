@@ -6,6 +6,8 @@ require File.expand_path('../../config/environment', __FILE__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 require 'database_cleaner'
+require 'support/request_spec_helper'
+
 
   # configure shoulder matchers to use rspec as test framework and fullmatcher libraries for rails
 Shoulda::Matchers.configure do |config|
@@ -15,9 +17,12 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
+Dir[Rails.root.join('spec/support/**/*.rb')].each{ |f| require f }
+
 RSpec.configure do |config|
   # Add factorygirl methods
   config.include FactoryBot::Syntax::Methods
+  config.include RequestSpecHelper, type: :request
 
   # Truncate all tables but use the fastest transaction
   config.before(:suite) do
