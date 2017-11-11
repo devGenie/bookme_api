@@ -6,7 +6,6 @@ FactoryBot.define do
         email "jonen54@gmail.com"
         password "256thjuly"
         date_added Time.now()
-        created_at Time.now()
         updated_at Time.now()
 
         factory :random_user do
