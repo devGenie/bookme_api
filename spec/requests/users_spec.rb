@@ -38,7 +38,7 @@ RSpec.describe "Users API", type: :request do
                                password:"256thjuly",
                                repeat_password:"256thjuly"} }
 
-        context('when the request is valis') do
+        context('when the request is valid') do
             before{ post '/users', params:valid_fields }
 
             it 'creates a user' do
