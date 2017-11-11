@@ -8,11 +8,10 @@ RSpec.describe User, type: :model do
                                 email:"jonen54@gmail.com",
                                 password:"256thjuly",
                                 date_added:Time.now(),
-                                created_at:Time.now(),
                                 updated_at:Time.now())
                                }
   it "has a valid factory" do
-    FactoryBot.create(:user).should be_valid
+    expect(FactoryBot.create(:user)).to be_valid
   end
 
   it "is valid with valid attributes" do
