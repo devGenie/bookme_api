@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111142127) do
+ActiveRecord::Schema.define(version: 20171111150405) do
 
   create_table "admins", force: :cascade do |t|
     t.integer "user_id"
@@ -101,8 +101,6 @@ ActiveRecord::Schema.define(version: 20171111142127) do
     t.string "password_digest", null: false
     t.datetime "date_added", null: false
     t.datetime "updated_at", null: false
-    t.string "token"
-    t.index ["token"], name: "index_users_on_token"
   end
 
 end
