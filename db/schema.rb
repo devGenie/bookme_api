@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111051525) do
+ActiveRecord::Schema.define(version: 20171111142127) do
 
   create_table "admins", force: :cascade do |t|
     t.integer "user_id"
@@ -18,6 +18,18 @@ ActiveRecord::Schema.define(version: 20171111051525) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_admins_on_user_id"
+  end
+
+  create_table "authentications", force: :cascade do |t|
+    t.string "token", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_on", null: false
+    t.datetime "expires_at", null: false
+    t.boolean "status", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_authentications_on_token"
+    t.index ["user_id"], name: "index_authentications_on_user_id"
   end
 
   create_table "authors", force: :cascade do |t|
@@ -89,6 +101,8 @@ ActiveRecord::Schema.define(version: 20171111051525) do
     t.string "password_digest", null: false
     t.datetime "date_added", null: false
     t.datetime "updated_at", null: false
+    t.string "token"
+    t.index ["token"], name: "index_users_on_token"
   end
 
 end
