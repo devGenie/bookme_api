@@ -30,12 +30,17 @@ class UsersController < ApplicationController
         user = User.find_by(email: params[:email].to_s.downcase)
 
         if user && user.authenticate(params[:password])
-            auth_token = JsonWebToken.encode({user_id:user.id})
+            macaddress = Mac.addr
+            auth_token = JsonWebToken.sign({user: user.id,macaddress: macaddress, iat: Time.now.to_i}, key: 'gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr9C')
             json_response({status:'successful',
                            message:'User logged in successfully',
                            token:auth_token},:ok)
         else
+            json_response({status:'failed',message:'User registration failed'},:unauthorized)
         end
+    end
+
+    def logout
     end
 
     private
