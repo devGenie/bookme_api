@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :users do
     collection do
-      get 'login'
+      post 'login'
     end
   end
 end
