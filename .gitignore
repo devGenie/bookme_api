@@ -21,3 +21,5 @@
 *.lock
 .coveralls.yml
 /coverage
+# Ignore application configuration
+/config/application.yml
