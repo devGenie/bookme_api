@@ -3,7 +3,7 @@ FactoryBot.define do
     factory :user do
         first_name "Onen"
         last_name "Julius"
-        email "jonen54@gmail.com"
+        email "test123@mail.com"
         password "256thjuly"
         date_added Time.now()
         updated_at Time.now()
