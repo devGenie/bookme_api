@@ -5,7 +5,7 @@ Coveralls.wear!
 RSpec.describe User, type: :model do
   subject { described_class.new(first_name:"Onen",
                                 last_name:"Julius",
-                                email:"jonen54@gmail.com",
+                                email:"test123@mail.com",
                                 password:"256thjuly",
                                 date_added:Time.now(),
                                 updated_at:Time.now())
@@ -17,6 +17,11 @@ RSpec.describe User, type: :model do
   it "is valid with valid attributes" do
     user = FactoryBot.create(:user)
     expect(user).to be_valid
+  end
+
+   it "is invalid with wrong email" do
+    subject.email="test"
+    expect(subject).to_not be_valid
   end
 
   it "is not valid without an email" do 
