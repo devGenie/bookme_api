@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111150405) do
+ActiveRecord::Schema.define(version: 20171114082425) do
 
   create_table "admins", force: :cascade do |t|
     t.integer "user_id"
@@ -20,22 +20,18 @@ ActiveRecord::Schema.define(version: 20171111150405) do
     t.index ["user_id"], name: "index_admins_on_user_id"
   end
 
-  create_table "authentications", force: :cascade do |t|
-    t.string "token", null: false
-    t.integer "user_id", null: false
-    t.datetime "created_on", null: false
-    t.datetime "expires_at", null: false
-    t.boolean "status", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["token"], name: "index_authentications_on_token"
-    t.index ["user_id"], name: "index_authentications_on_user_id"
-  end
-
   create_table "authors", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "blacklisted_tokens", force: :cascade do |t|
+    t.string "token", null: false
+    t.integer "user_id", null: false
+    t.datetime "blacklisted_on", null: false
+    t.index ["token"], name: "index_blacklisted_tokens_on_token"
+    t.index ["user_id"], name: "index_blacklisted_tokens_on_user_id"
   end
 
   create_table "books", force: :cascade do |t|
