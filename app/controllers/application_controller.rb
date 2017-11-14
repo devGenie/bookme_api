@@ -8,8 +8,12 @@ class ApplicationController < ActionController::API
         if !payload
             invalid_authentication
         else
-            load_current_user!
-            invalid_authentication unless @current_user
+            auth_header = request.headers['Authorization']
+            if !load_current_user! || Mac.addr != payload[:macaddress] || BlacklistedToken.exists?(token:auth_header)
+                invalid_authentication
+            else
+                @current_user
+            end
         end
     end
 
@@ -19,15 +23,13 @@ class ApplicationController < ActionController::API
 
     private 
     def payload
-        auth_header = request.headers['Authorization']    
-        token = auth_header
-        JsonWebToken.verify(token, key: ENV['hash_key'])
-
+        token = request.headers['Authorization'] 
+        JsonWebToken.verify(token, key: ENV['hash_key'])[:ok]
     rescue
         nil                                                                                                                                                                                                                                                                                                                                            
     end
 
     def load_current_user!
-        @current_user = User.find_by_id(3)
+        @current_user = User.where(id:payload[:user]).select(:id, :first_name, :last_name, :email)[0]
     end
 end
