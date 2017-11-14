@@ -1,14 +1,8 @@
 class UsersController < ApplicationController
     before_action :get_user, only: [:show, :update, :destroy]
-    before_action :authenticate_request!, only:[:logout]
+    before_action :authenticate_request!, only:[:index, :logout, :show, :update, :destroy]
     def index
-        @users=User.select('id',
-                           'first_name',
-                           'last_name',
-                           'email',
-                           'date_added',
-                           'updated_at')
-        json_response(@users)
+        json_response({profile:@current_user})
     end
 
     def show
