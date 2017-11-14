@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
     before_action :get_user, only: [:show, :update, :destroy]
+    before_action :authenticate_request!, only:[:logout]
     def index
         @users=User.select('id',
                            'first_name',
@@ -31,7 +32,7 @@ class UsersController < ApplicationController
 
         if user && user.authenticate(params[:password])
             macaddress = Mac.addr
-            auth_token = JsonWebToken.sign({user: user.id,macaddress: macaddress, iat: Time.now.to_i}, key: 'gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr9C')
+            auth_token = JsonWebToken.sign({user: user.id,macaddress: macaddress, iat: Time.now.to_i}, key: ENV['hash_key'])
             json_response({status:'successful',
                            message:'User logged in successfully',
                            token:auth_token},:ok)
@@ -41,6 +42,11 @@ class UsersController < ApplicationController
     end
 
     def logout
+        if @current_user
+            token = request.headers['Authorization']
+            BlacklistedToken.create(token: token,user_id: @current_user.id)
+            json_response({status:'success',message:'User logged out successfuly'})
+        end
     end
 
     private
