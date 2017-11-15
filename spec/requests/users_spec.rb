@@ -11,34 +11,7 @@ RSpec.describe "Users API", type: :request do
     let(:login_details){{
                            email:valid_fields[:email],
                            password:valid_fields[:params]}}
-    
-    describe 'GET /users' do
-        before { get '/users' }
-        it 'returns users' do
-            expect(json).not_to be_empty
-            expect(json.size).to eq(10)
-        end
-
-        it 'returns status code 200' do
-            expect(response).to have_http_status(200)
-        end
-    end
-
-    describe 'GET /users/:id' do
-        before { get "/users/#{user_id}"}
-
-        context 'when the user exists' do
-            it 'returns the user' do
-                expect(json).not_to be_empty
-                expect(json['id']).to eq(user_id)
-            end
-
-            it 'returns status code 200' do
-                expect(response).to have_http_status(200)
-            end
-        end
-    end
-
+                           
     describe 'POST /users' do
         context('when the request is valid') do
             before{ post '/users', params:valid_fields }
