@@ -71,6 +71,30 @@ RSpec.describe "Users API", type: :request do
             it 'After login, correct message should be returned' do
                 expect(json['message']).to eq("User logged in successfully")
             end
+
+            it 'After login, response body has all fields' do
+                expect(json.keys).to contain_exactly('status','message','token')
+            end
+        end
+
+        context('user is not able to login') do
+            before{ post '/users/login', params:{email:'jonen54@mail.com',password:'none'}} 
+
+            it 'returns status code 401' do
+                expect(response).to have_http_status(401)
+            end
+
+            it 'returns an error message' do
+                expect(json['message']).to eq('User failed to login')
+            end
+
+            it 'returns status failed' do
+                expect(json['status']).to eq('failed')
+            end
+
+            it 'returns both a status and a message' do
+                expect(json.keys).to contain_exactly('status','message')
+            end
         end
     end
 end
