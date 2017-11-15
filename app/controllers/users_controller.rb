@@ -31,7 +31,7 @@ class UsersController < ApplicationController
                            message:'User logged in successfully',
                            token:auth_token},:ok)
         else
-            json_response({status:'failed',message:'User registration failed'},:unauthorized)
+            json_response({status:'failed',message:'User failed to login'},:unauthorized)
         end
     end
 
