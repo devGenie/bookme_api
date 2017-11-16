@@ -7,4 +7,9 @@ Rails.application.routes.draw do
       get  'borrowed_books'
     end
   end
+
+  resources :libraries do
+    collection do
+    end
+  end
 end
