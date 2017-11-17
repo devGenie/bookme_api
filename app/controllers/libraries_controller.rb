@@ -4,13 +4,24 @@ class LibrariesController < ApplicationController
                                                 :destroy,
                                                 :show]
     def index
+        current_page = (params[:page]).to_i
+        count = (params[:count]).to_i
+
+        libs = Library.all.paginate(page: current_page, per_page: count)
+        base_url = request.original_url.split('?').first
+        pagination = {
+            "total_pages":(Library.count/count).ceil,
+            "current_page":request.original_url,
+            "next_page_url": "#{base_url}?page=#{current_page+1}&count=#{count}", 
+            "prev_page_url": "#{base_url}?page=#{current_page-1}&count=#{count}"
+        }
+        json_response({status:'success',message:'Libraries retrieved successfully',libraries:libs,pagination:pagination})
     end
 
     def show
     end
     
     def create
-        puts 'here'
         library = Library.new
         library.user = @current_user
         library.name = library_params[:name]
