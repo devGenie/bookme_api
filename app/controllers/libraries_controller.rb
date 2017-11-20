@@ -15,6 +15,9 @@ class LibrariesController < ApplicationController
             "prev_page_url": "#{base_url}?page=#{current_page-1}&count=#{count}"
         }
         json_response({status:'success',message:'Libraries retrieved successfully',libraries:libs,pagination:pagination})
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Libraries not found'},:not_found)
     end
 
     def show
@@ -40,6 +43,15 @@ class LibrariesController < ApplicationController
     end
 
     def update
+        library = Library.find(params[:id])
+        if library.update_attributes(library_params)
+            json_response({status:'success',message:'Library updated successfully',library:library})
+        else
+            json_response({status:'failed',message:'Library not updated'})
+        end
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
     end
 
     def destroy
