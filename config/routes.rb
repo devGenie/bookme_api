@@ -11,5 +11,9 @@ Rails.application.routes.draw do
   resources :libraries do
     collection do
     end
+    resources :books do
+      collection do
+      end
+    end
   end
 end
