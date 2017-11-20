@@ -55,6 +55,15 @@ class LibrariesController < ApplicationController
     end
 
     def destroy
+        library = Library.find(params[:id])
+        if library.destroy
+            json_response({status:'success',message:'Library deleted successfully'})
+        else
+            json_response({status:'success',message:'Library failed to delete'})
+        end
+    
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
     end
 
     private
