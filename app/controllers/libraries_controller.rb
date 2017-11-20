@@ -18,6 +18,11 @@ class LibrariesController < ApplicationController
     end
 
     def show
+        library = Library.find(params[:id])
+        json_response({status:'success',message:'Library retrieved successfully',library:library})
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
     end
     
     def create
