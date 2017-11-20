@@ -5,6 +5,13 @@ class AuthorsController < ApplicationController
                                                 :update,
                                                 :destroy]
     def index
+        authors = Author.where(user_id:@current_user.id)
+        json_response({status:'success',
+                       message:'Authors retrieved successfully',
+                       authors:authors})
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Authors not found'},:not_found)
     end
 
     def create
@@ -22,6 +29,13 @@ class AuthorsController < ApplicationController
     end
 
     def show
+        authors = Author.find(params[:id])
+        json_response({status:'success',
+                       message:'Authors retrieved successfully',
+                       authors:authors})
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Authors not found'},:not_found)
     end
 
     def update
