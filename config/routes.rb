@@ -16,4 +16,14 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :authors do
+    collection do
+    end
+  end
+
+  resources :categories do
+    collection do
+    end
+  end
 end
