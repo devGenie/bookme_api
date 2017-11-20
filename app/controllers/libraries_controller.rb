@@ -1,8 +1,7 @@
 class LibrariesController < ApplicationController
     before_action :authenticate_request!, only:[:create, 
                                                 :update,
-                                                :destroy,
-                                                :show]
+                                                :destroy]
     def index
         current_page = (params[:page]).to_i
         count = (params[:count]).to_i
