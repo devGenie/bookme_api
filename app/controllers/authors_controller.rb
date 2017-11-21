@@ -51,6 +51,15 @@ class AuthorsController < ApplicationController
     end
 
     def destroy
+        author = Author.find(params[:id])
+        if author.destroy
+            json_response({status:'success',message:'Author deleted successfully',author:author})
+        else
+            json_response({status:'failed',message:'Author failed to delete'})
+        end
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Author not found'},:not_found)
     end
 
     private
