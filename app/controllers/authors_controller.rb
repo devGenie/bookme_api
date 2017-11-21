@@ -39,6 +39,15 @@ class AuthorsController < ApplicationController
     end
 
     def update
+        author = Author.find(params[:id])
+        if author.update_attributes(author_params)
+            json_response({status:'success',message:'Author updated successfully',author:author})
+        else
+            json_response({status:'failed',message:'Author failed to update'})
+        end
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Author not found'},:not_found)
     end
 
     def destroy
