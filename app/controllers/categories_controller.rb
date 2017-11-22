@@ -29,6 +29,13 @@ class CategoriesController < ApplicationController
     end
 
     def show
+        category = Category.where(id:params[:id],user_id:@current_user.id)
+        json_response({status:'success',
+                       message:'Category fetched successfully',
+                       category:category})
+    
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Category not found'},:not_found)
     end
 
     def update
