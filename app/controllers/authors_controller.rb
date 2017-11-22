@@ -30,8 +30,8 @@ class AuthorsController < ApplicationController
     end
 
     def show
-        if Author.exists?(params[:id])
-            authors = Author.find_by(id:params[:id],user_id:@current_user.id)
+        authors = Author.find_by(id:params[:id],user_id:@current_user.id)
+        if authors.present?
             json_response({status:'success',
                         message:'Authors retrieved successfully',
                         authors:authors})
@@ -42,26 +42,28 @@ class AuthorsController < ApplicationController
 
     def update
         author = Author.find_by(id:params[:id],user_id:@current_user.id)
-        if author.update_attributes(author_params)
-            json_response({status:'success',message:'Author updated successfully',author:author})
+        if author.present?
+            if author.update_attributes(author_params)
+                json_response({status:'success',message:'Author updated successfully',author:author})
+            else
+                json_response({status:'failed',message:'Author failed to update'})
+            end
         else
-            json_response({status:'failed',message:'Author failed to update'})
+            json_response({status:'failed',message:'Author not found'},:not_found)
         end
-
-    rescue ActiveRecord::RecordNotFound => e
-        json_response({status:'failed',message:'Author not found'},:not_found)
     end
 
     def destroy
         author = Author.find_by(id:params[:id],user_id:@current_user.id)
-        if author.destroy
-            json_response({status:'success',message:'Author deleted successfully',author:author})
+        if author.present?
+            if author.destroy
+                json_response({status:'success',message:'Author deleted successfully',author:author})
+            else
+                json_response({status:'failed',message:'Author failed to delete'})
+            end
         else
-            json_response({status:'failed',message:'Author failed to delete'})
+            json_response({status:'failed',message:'Author not found'},:not_found)
         end
-
-    rescue ActiveRecord::RecordNotFound => e
-        json_response({status:'failed',message:'Author not found'},:not_found)
     end
 
     private
