@@ -2,7 +2,7 @@ class BooksController < ApplicationController
     before_action :authenticate_request!, only:[:create,
                                                 :update,
                                                 :destroy]
-    before_action :get_category,:get_author, :get_category, only:[:create]
+    before_action :get_library,:get_author, :get_category, only:[:create]
     def index
         books = Book.find_by(library_id:params[:library_id])
         if books.present?
@@ -13,6 +13,23 @@ class BooksController < ApplicationController
     end
 
     def create
+        book = Book.new
+        book.title = book_params[:title]
+        book.isbn = book_params[:isbn]
+        book.copies = book_params[:copies]
+        book.description = book_params[:desription]
+        book.author = @author
+        book.cover_type = book_params[:cover_type]
+        book.category = @category
+        book.library = @library
+
+        if book.save!
+            json_response({status:'success',
+                           message:'Book added successfully',
+                           book:book},:created)
+        else
+            json_response({status:'failed',message:'Book failed to add'})
+        end
     end
 
     def show
@@ -27,7 +44,7 @@ class BooksController < ApplicationController
 
     private
     def get_library
-        library = Library.find_by(id:book_params[:library_id],user_id:@current_user.id)
+        library = Library.find_by(id:params[:library_id],user_id:@current_user.id)
         if library.present?
             @library = library
         else
