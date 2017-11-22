@@ -29,7 +29,7 @@ class AuthorsController < ApplicationController
     end
 
     def show
-        authors = Author.find(params[:id])
+        authors = Author.where(id:params[:id],user_id:@current_user.id)
         json_response({status:'success',
                        message:'Authors retrieved successfully',
                        authors:authors})
