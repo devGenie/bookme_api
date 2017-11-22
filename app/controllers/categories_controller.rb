@@ -6,13 +6,14 @@ class CategoriesController < ApplicationController
                                                :destroy]
     
     def index
-        categories = Category.where(user_id:@current_user.id)
-        json_response({status:'success',
-                       message:'Categories retrieved successfully',
-                       categories:categories})
-
-    rescue ActiveRecord::RecordNotFound => e
-        json_response({status:'failed',message:'Categories not found, please add some'},:not_found)
+        categories = Category.find_by(user_id:@current_user.id)
+        if categories.present?
+            json_response({status:'success',
+                        message:'Categories retrieved successfully',
+                        categories:categories})
+        else
+            json_response({status:'failed',message:'Categories not found, please add some'},:not_found)
+        end
     end
 
     def create
@@ -29,13 +30,14 @@ class CategoriesController < ApplicationController
     end
 
     def show
-        category = Category.where(id:params[:id],user_id:@current_user.id)
-        json_response({status:'success',
-                       message:'Category fetched successfully',
-                       category:category})
-    
-    rescue ActiveRecord::RecordNotFound => e
-        json_response({status:'failed',message:'Category not found'},:not_found)
+        if Category.exists?(params[:id])
+            category = Category.where(id:params[:id],user_id:@current_user.id)
+            json_response({status:'success',
+                        message:'Category fetched successfully',
+                        category:category})
+        else
+            json_response({status:'failed',message:'Category not found'},:not_found)
+        end
     end
 
     def update
@@ -56,7 +58,8 @@ class CategoriesController < ApplicationController
             json_response({status:'success',message:'Category deleted successfully'})
         else
             json_response({status:'failed',message:'Category failed  to delete'})
-    
+        end
+        
     rescue ActiveRecord::RecordNotFound => e
         json_response({status:'failed',message:'Category not found'},:not_found)
     end
