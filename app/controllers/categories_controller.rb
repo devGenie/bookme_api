@@ -6,6 +6,13 @@ class CategoriesController < ApplicationController
                                                :destroy]
     
     def index
+        categories = Category.where(user_id:@current_user.id)
+        json_response({status:'success',
+                       message:'Categories retrieved successfully',
+                       categories:categories})
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Categories not found, please add some'},:not_found)
     end
 
     def create
