@@ -33,7 +33,12 @@ class BooksController < ApplicationController
     end
 
     def show
-        json_response({lib:@author.id})
+        book = Book.find_by(library_id:params[:library_id],id:params[:id])
+        if book.present?
+            json_response({status:'success',message:'Book retrieved successfully',book:book})
+        else
+            json_response({status:'failed',message:'Book not found'},:not_found)
+        end
     end
 
     def update
