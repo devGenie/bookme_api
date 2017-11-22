@@ -56,6 +56,17 @@ class BooksController < ApplicationController
     end
 
     def destroy
+        book = Book.find_by(library_id:params[:library_id],id:params[:id])
+        if book.present?
+            if book.destroy
+                json_response({status:'success',message:'Book deleted successfully'})
+            else
+                json_response({status:'failed',message:'Book not deleted'})
+            end
+
+        else
+            json_response({status:'failed',message:'Book not found'},:not_found)
+        end
     end
 
     private
