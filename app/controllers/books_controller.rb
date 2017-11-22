@@ -42,6 +42,17 @@ class BooksController < ApplicationController
     end
 
     def update
+        book = Book.find_by(library_id:params[:library_id],id:params[:id])
+        if book.present?
+            if book.update_attributes(book_params)
+                json_response({status:'success',message:'Book edited successfully',book:book})
+            else
+                json_response({status:'failed',message:'Book not edited'})
+            end
+
+        else
+            json_response({status:'failed',message:'Book not found'},:not_found)
+        end
     end
 
     def destroy
