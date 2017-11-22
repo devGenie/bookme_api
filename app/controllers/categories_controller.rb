@@ -51,6 +51,14 @@ class CategoriesController < ApplicationController
     end
 
     def destroy
+        category = Category.find_by(id:params[:id],user_id:@current_user.id)
+        if category.destroy
+            json_response({status:'success',message:'Category deleted successfully'})
+        else
+            json_response({status:'failed',message:'Category failed  to delete'})
+    
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Category not found'},:not_found)
     end
 
     private
