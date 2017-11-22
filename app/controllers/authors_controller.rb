@@ -39,7 +39,7 @@ class AuthorsController < ApplicationController
     end
 
     def update
-        author = Author.find(params[:id])
+        author = Author.find_by(id:params[:id],user_id:@current_user.id)
         if author.update_attributes(author_params)
             json_response({status:'success',message:'Author updated successfully',author:author})
         else
@@ -51,7 +51,7 @@ class AuthorsController < ApplicationController
     end
 
     def destroy
-        author = Author.find(params[:id])
+        author = Author.find_by(id:params[:id],user_id:@current_user.id)
         if author.destroy
             json_response({status:'success',message:'Author deleted successfully',author:author})
         else
