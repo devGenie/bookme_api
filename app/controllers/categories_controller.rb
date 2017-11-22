@@ -39,6 +39,15 @@ class CategoriesController < ApplicationController
     end
 
     def update
+        category = Category.find_by(id:params[:id],user_id:@current_user.id)
+        if category.update_attributes(category_params)
+            json_response({status:'success',message:'Category updated successfully',category:category})
+        else
+            json_response({status:'success',message:'Category was not updated'})
+        end
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Category not found'},:not_found)
     end
 
     def destroy
