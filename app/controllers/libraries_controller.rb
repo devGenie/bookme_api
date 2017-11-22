@@ -3,8 +3,8 @@ class LibrariesController < ApplicationController
                                                 :update,
                                                 :destroy]
     def index
-        current_page = (params[:page]).to_i
-        count = (params[:count]).to_i
+        current_page = ((params[:page]).to_i).blank? || 1
+        count = ((params[:count]).to_i).blank? || 10
 
         libs = Library.all.paginate(page: current_page, per_page: count)
         base_url = request.original_url.split('?').first
