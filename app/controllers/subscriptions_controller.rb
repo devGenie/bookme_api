@@ -58,6 +58,18 @@ class SubscriptionsController < ApplicationController
     end
 
     def unsubscribe
+        subsciber = Subscription.joins(:user)
+                    .joins(:library)
+                    .where(:libraries=>{:id=>@library.id},:users=>{:id=>@current_user.id})
+        if subsciber.present?
+            if subsciber.destroy_all
+                json_response({status:'success',message:'Subscription successfully canceled'})
+            else
+                json_response({status:'failed',message:'Subscription failed to cancel'})
+            end
+        else
+            json_response({status:'failed',message:'Subscription not found'},:not_found)
+        end
     end
 
     private
