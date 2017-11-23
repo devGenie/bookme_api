@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     resources :subscriptions do
       collection do
         post 'subscribe'
-        post 'unsubscribe'
+        delete 'unsubscribe'
       end
     end
   end
