@@ -63,7 +63,6 @@ class BooksController < ApplicationController
             else
                 json_response({status:'failed',message:'Book not deleted'})
             end
-
         else
             json_response({status:'failed',message:'Book not found'},:not_found)
         end
