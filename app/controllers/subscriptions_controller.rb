@@ -19,6 +19,16 @@ class SubscriptionsController < ApplicationController
     end
 
     def show
+        subscriber = Subscription.joins(:user).joins(:library)
+                        .select('users.first_name as first_name, users.last_name AS last_name')
+                        .where(:libraries=>{:id=>1},:subscriptions=>{:id=>1})
+        if subscriber.present?
+            json_response({status:'success',
+                           message:'Subscriptions retrieved successfully',
+                           subscriber:subscriber})
+        else
+            json_response({status:'failed',message:'Subscriber not found'})
+        end
     end
 
     def subscribe
