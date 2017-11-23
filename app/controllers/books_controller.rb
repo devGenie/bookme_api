@@ -1,8 +1,13 @@
 class BooksController < ApplicationController
     before_action :authenticate_request!, only:[:create,
                                                 :update,
-                                                :destroy]
+                                                :destroy,
+                                                :borrow,
+                                                :return,
+                                                :get_book]
     before_action :get_library,:get_author, :get_category, only:[:create]
+    before_action :get_subscriber, only:[:borrow,:return]
+
     def index
         books = Book.find_by(library_id:params[:library_id])
         if books.present?
@@ -68,6 +73,20 @@ class BooksController < ApplicationController
         end
     end
 
+    def borrow
+        newly_borrowed = BorrowedBook.new
+        newly_borrowed.book = @book
+        newly_borrowed.subscription = @subscriber
+        newly_borrowed.date_borrowed = Time.zone.now
+        newly_borrowed.date_due = (Date.today+3)
+        
+        if newly_borrowed.save!
+            json_response({status:'success',message:'Book borrowed successfully',details:newly_borrowed},:created)
+        else
+            json_response({status:'failed',message:'Book not borrowed'})
+        end
+    end
+
     private
     def get_library
         library = Library.find_by(id:params[:library_id],user_id:@current_user.id)
@@ -94,6 +113,21 @@ class BooksController < ApplicationController
         else
             json_response({status:'failed',message:'Category does not exist'},:not_found)
         end
+    end
+
+    def get_subscriber
+        book = get_book
+        subscriber = Subscription.find_by(user_id:@current_user.id,
+                                          library_id:book.library_id)
+        if !subscriber.present?
+            json_response({status:'false',message:'User not subscribed to library'},:not_authorized)
+        else
+            @subscriber = subscriber
+        end
+    end
+
+    def get_book
+        @book = Book.find(params[:id])
     end
 
     def book_params
