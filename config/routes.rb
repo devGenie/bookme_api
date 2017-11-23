@@ -14,11 +14,17 @@ Rails.application.routes.draw do
     resources :books do
       collection do
       end
+      member do
+        post 'borrow'
+        post 'return'
+      end
     end
 
     resources :subscriptions do
       collection do
         post 'subscribe'
+      end
+      member do
         delete 'unsubscribe'
       end
     end
