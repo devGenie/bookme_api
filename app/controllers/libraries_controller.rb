@@ -1,7 +1,8 @@
 class LibrariesController < ApplicationController
     before_action :authenticate_request!, only:[:create, 
                                                 :update,
-                                                :destroy]
+                                                :destroy,
+                                                :subsribe]
     def index
         current_page = ((params[:page]).to_i).blank? || 1
         count = ((params[:count]).to_i).blank? || 10
@@ -43,27 +44,29 @@ class LibrariesController < ApplicationController
     end
 
     def update
-        library = Library.find(params[:id])
-        if library.update_attributes(library_params)
-            json_response({status:'success',message:'Library updated successfully',library:library})
+        library = Library.find_by(id:params[:id],user_id:@current_user.id)
+        if library.present? 
+            if library.update_attributes(library_params)
+                json_response({status:'success',message:'Library updated successfully',library:library})
+            else
+                json_response({status:'failed',message:'Library not updated'})
+            end
         else
-            json_response({status:'failed',message:'Library not updated'})
+            json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
         end
-
-    rescue ActiveRecord::RecordNotFound => e
-        json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
     end
 
     def destroy
-        library = Library.find(params[:id])
-        if library.destroy
-            json_response({status:'success',message:'Library deleted successfully'})
+        library = Library.find_by(id:params[:id],user_id:@current_user.id)
+        if library.present?
+            if library.destroy
+                json_response({status:'success',message:'Library deleted successfully'})
+            else
+                json_response({status:'success',message:'Library failed to delete'})
+            end
         else
-            json_response({status:'success',message:'Library failed to delete'})
+            json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
         end
-    
-    rescue ActiveRecord::RecordNotFound => e
-        json_response({status:'failed',message:'Library matching specified id does not exist'},:not_found)
     end
 
     private
