@@ -32,6 +32,23 @@ class SubscriptionsController < ApplicationController
     end
 
     def subscribe
+        subscription = Subscription.new
+        subscription.library = @library
+        subscription.user = @current_user
+        subscription.date_subscribed = Time.zone.now
+
+        if subscription.save!
+            json_response({status:'success',
+                           message:'User subscribed successfully',
+                           subsciber:{
+                               id:subscription.id,
+                               first_name:@current_user.first_name,
+                               last_name: @current_user.last_name,
+                               date_subscribed:subscription
+                           }},:created)
+        else
+            json_response({status:'failed',message:'Subscription failed'})
+        end
     end
 
     def unsubscribe
