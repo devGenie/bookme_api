@@ -74,16 +74,22 @@ class BooksController < ApplicationController
     end
 
     def borrow
-        newly_borrowed = BorrowedBook.new
-        newly_borrowed.book = @book
-        newly_borrowed.subscription = @subscriber
-        newly_borrowed.date_borrowed = Time.zone.now
-        newly_borrowed.date_due = (Date.today+3)
-        
-        if newly_borrowed.save!
-            json_response({status:'success',message:'Book borrowed successfully',details:newly_borrowed},:created)
+        borrowed = BorrowedBook.find_by(book_id:@book.id)
+
+        if borrowed.present?
+            json_response({status:'failed',message:'Book already borrowed'},:conflict)
         else
-            json_response({status:'failed',message:'Book not borrowed'})
+            newly_borrowed = BorrowedBook.new
+            newly_borrowed.book = @book
+            newly_borrowed.subscription = @subscriber
+            newly_borrowed.date_borrowed = Time.zone.now
+            newly_borrowed.date_due = (Date.today+3)
+            
+            if newly_borrowed.save!
+                json_response({status:'success',message:'Book borrowed successfully',details:newly_borrowed},:created)
+            else
+                json_response({status:'failed',message:'Book not borrowed'})
+            end
         end
     end
 
