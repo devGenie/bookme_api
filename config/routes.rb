@@ -13,10 +13,10 @@ Rails.application.routes.draw do
     end
     resources :books do
       collection do
+        post 'return/:borrowed_id', to: 'books#return'
       end
       member do
-        post 'borrow/subscriber/:subscription_id', to: 'books#borrow'
-        post 'return/subscriber/:subscription_id', to: 'books#return'
+        post 'subscriber/:subscription_id/borrow/:collection_id', to: 'books#borrow'
       end
     end
 
