@@ -6,7 +6,7 @@ class BooksController < ApplicationController
                                                 :return,
                                                 :get_book]
     before_action :get_library,:get_author, :get_category, only:[:create]
-    before_action :get_subscriber, only:[:borrow,:return]
+    before_action :get_subscriber,:get_book, only:[:borrow]
 
     def index
         books = Book.find_by(library_id:params[:library_id])
@@ -29,6 +29,11 @@ class BooksController < ApplicationController
         book.library = @library
 
         if book.save!
+            book.copies.times do |i|
+                book_collection = BookCollection.new
+                book_collection.book = book
+                book_collection.save!
+            end
             json_response({status:'success',
                            message:'Book added successfully',
                            book:book},:created)
@@ -74,13 +79,13 @@ class BooksController < ApplicationController
     end
 
     def borrow
-        borrowed = BorrowedBook.find_by(book_id:@book.id)
+        borrowed = BorrowedBook.where(["book_collection_id = ?", params[:collection_id]]).last
 
-        if borrowed.present?
+        if borrowed.present? && borrowed.return_status == false
             json_response({status:'failed',message:'Book already borrowed'},:conflict)
         else
             newly_borrowed = BorrowedBook.new
-            newly_borrowed.book = @book
+            newly_borrowed.book_collection = @book
             newly_borrowed.subscription = @subscriber
             newly_borrowed.date_borrowed = Time.zone.now
             newly_borrowed.date_due = (Date.today+3)
@@ -94,10 +99,10 @@ class BooksController < ApplicationController
     end
 
     def return
-        borrowed = BorrowedBook.find_by(book_id:@book.id)
+        borrowed = BorrowedBook.find_by(id:params[:borrowed_id])
 
         if borrowed.present?
-            if borrowed.return_status = true
+            if borrowed.return_status == true
                 json_response({status:'failed',message:'Book already returned'},:conflict)
             else
                 return_details = {return_status:true,
@@ -145,18 +150,17 @@ class BooksController < ApplicationController
     end
 
     def get_subscriber
-        book = get_book
-        subscriber = Subscription.find_by(user_id:@current_user.id,
-                                          library_id:book.library_id)
-        if !subscriber.present?
-            json_response({status:'false',message:'User not subscribed to library'},:not_authorized)
-        else
-            @subscriber = subscriber
-        end
+        @subscriber = Subscription.find(params[:subscription_id])
+
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'false',message:'User not subscribed to library'},:not_authorized)
     end
 
     def get_book
-        @book = Book.find(params[:id])
+        @book = BookCollection.find(params[:collection_id])
+    
+    rescue ActiveRecord::RecordNotFound => e
+        json_response({status:'failed',message:'Book not found'},:not_found)
     end
 
     def book_params
