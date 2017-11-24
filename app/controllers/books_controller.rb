@@ -2,16 +2,22 @@ class BooksController < ApplicationController
     before_action :authenticate_request!, only:[:create,
                                                 :update,
                                                 :destroy,
-                                                :borrow,
-                                                :return,
-                                                :get_book]
-    before_action :get_library,:get_author, :get_category, only:[:create]
+                                                :verify_ownership]
+    before_action :get_library,:get_author, :get_category, only:[:create, :verify_ownership]
     before_action :get_subscriber,:get_book, only:[:borrow]
+    before_action :verify_ownership, only:[:borrow, :return]
 
     def index
-        books = Book.find_by(library_id:params[:library_id])
+        books = Book.limit(10).includes(:book_collections)
+                .where(:books=>{library_id:params[:library_id]})
+        data = []
+        books.each do |book|
+            collection = {details:book,batch:book.book_collections}
+            data.push(collection)
+        end
+
         if books.present?
-            json_response({status:'success',message:'Books retrieved successfully',books:books})
+            json_response({status:'success',message:'Books retrieved successfully',books:data})
         else
             json_response({status:'failed',message:'No Books found'},:not_found)
         end
@@ -43,7 +49,7 @@ class BooksController < ApplicationController
     end
 
     def show
-        book = Book.find_by(library_id:params[:library_id],id:params[:id])
+        book = Book.includes(:book).find_by(library_id:params[:library_id],id:params[:id])
         if book.present?
             json_response({status:'success',message:'Book retrieved successfully',book:book})
         else
@@ -122,7 +128,16 @@ class BooksController < ApplicationController
     end
 
     private
+    def verify_ownership
+        authenticate_request!
+        get_library
+        if @library.user_id != @current_user.id
+            json_response({status:'failed',message:'User does not have access to this library'},:not_authorized)
+        end
+    end
+
     def get_library
+        puts 'called'
         library = Library.find_by(id:params[:library_id],user_id:@current_user.id)
         if library.present?
             @library = library
