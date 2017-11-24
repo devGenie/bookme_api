@@ -93,6 +93,29 @@ class BooksController < ApplicationController
         end
     end
 
+    def return
+        borrowed = BorrowedBook.find_by(book_id:@book.id)
+
+        if borrowed.present?
+            if borrowed.return_status = true
+                json_response({status:'failed',message:'Book already returned'},:conflict)
+            else
+                return_details = {return_status:true,
+                              date_returned:Time.zone.now,
+                              comments:params[:comments]
+                            }
+
+                if borrowed.update(return_details)
+                    json_response({status:'success',message:'Book returned successfully'})
+                else
+                    json_response({status:'failed',message:'Book not returned successfully'})
+                end
+            end
+        else
+            json_response({status:'failed',message:'Book not been borrowed'},:not_found)
+        end
+    end
+
     private
     def get_library
         library = Library.find_by(id:params[:library_id],user_id:@current_user.id)
