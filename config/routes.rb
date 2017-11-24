@@ -15,8 +15,8 @@ Rails.application.routes.draw do
       collection do
       end
       member do
-        post 'borrow'
-        post 'return'
+        post 'borrow/subscriber/:subscription_id', to: 'books#borrow'
+        post 'return/subscriber/:subscription_id', to: 'books#return'
       end
     end
 
