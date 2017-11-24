@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171123205610) do
+ActiveRecord::Schema.define(version: 20171124122329) do
 
   create_table "admins", force: :cascade do |t|
     t.integer "user_id"
@@ -36,6 +36,14 @@ ActiveRecord::Schema.define(version: 20171123205610) do
     t.index ["user_id"], name: "index_blacklisted_tokens_on_user_id"
   end
 
+  create_table "book_collections", force: :cascade do |t|
+    t.integer "books_id"
+    t.boolean "availability_status", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["books_id"], name: "index_book_collections_on_books_id"
+  end
+
   create_table "books", force: :cascade do |t|
     t.string "isbn"
     t.integer "copies"
@@ -54,14 +62,14 @@ ActiveRecord::Schema.define(version: 20171123205610) do
   end
 
   create_table "borrowed_books", force: :cascade do |t|
-    t.integer "book_id"
     t.datetime "date_borrowed", null: false
     t.datetime "date_due", null: false
     t.boolean "return_status", default: false
     t.string "comments"
     t.integer "subscription_id"
     t.datetime "date_returned"
-    t.index ["book_id"], name: "index_borrowed_books_on_book_id"
+    t.integer "book_collection_id"
+    t.index ["book_collection_id"], name: "index_borrowed_books_on_book_collection_id"
     t.index ["subscription_id"], name: "index_borrowed_books_on_subscription_id"
   end
 
