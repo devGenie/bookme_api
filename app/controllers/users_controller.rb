@@ -1,14 +1,18 @@
 class UsersController < ApplicationController
     before_action :get_user, only: [:show, :update, :destroy]
     before_action :authenticate_request!, only:[:index, :logout, :show, :update, :destroy]
+    
+    api!
     def index
         json_response({profile:@current_user})
     end
 
+    api!
     def show
         json_response(@user)
     end
 
+    api!
     def create
         if user_params['password'] == user_params['repeat_password']
             new_params=user_params.except(:repeat_password)
@@ -21,6 +25,7 @@ class UsersController < ApplicationController
         end
     end
 
+    api!
     def login
         user = User.find_by(email: params[:email].to_s.downcase)
 
@@ -35,6 +40,7 @@ class UsersController < ApplicationController
         end
     end
 
+    api!
     def logout
         if @current_user
             token = request.headers['Authorization']
