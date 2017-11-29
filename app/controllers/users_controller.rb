@@ -2,17 +2,50 @@ class UsersController < ApplicationController
     before_action :get_user, only: [:show, :update, :destroy]
     before_action :authenticate_request!, only:[:index, :logout, :show, :update, :destroy]
     
-    api!
+    api :GET, "/users", "Show logged in user's profile"
+    show true
+    error :code => 401, :desc => "User has not been logged in or the request has expired", :meta => {:status => "failed", :message => "Your request is invalid or expired"}
+    description "You can display the current user's profile with this endpoint."\
+                 "The User has to be logged in to be able to display their data."
+    example "{
+                'status': 'success',
+                'messgae': 'User retrieved successfully',
+                'profile': {
+                            'id': 1,
+                            'first_name': 'Onen',
+                            'last_name': 'Julius',
+                            'email': 'oj121@mail.com'
+                            }
+    }"
+    
     def index
-        json_response({profile:@current_user})
+        json_response({status:'success',
+                       messgae:'User retrieved successfully',
+                       profile:@current_user})
     end
 
-    api!
+    api :GET, "/users/:id", "Show a user with the provided user ID"
+    show true
+    error :code => 401, :desc => "User is not authorized to access this profile",:meta => {:status => "failed", :message => "Your request is invalid or expired"}
+    error :code => 404, :desc => "User with the provided ID does not exist", :meta => {:status=>'failed',:message => "User does not exist"}
+    description "To display a user's profile, provide a user ID with the request. You can only view a user if you are logged in"
+     example "{
+                'status': 'success',
+                'messgae': 'User retrieved successfully',
+                'profile': {
+                            'id': 1,
+                            'first_name': 'Onen',
+                            'last_name': 'Julius',
+                            'email': 'oj121@mail.com'
+                            }
+    }"
+
     def show
         json_response(@user)
     end
 
-    api!
+    api :POST, "/users", "Add user into the system"
+    description "Use this API endpoint to add users into the system"
     def create
         if user_params['password'] == user_params['repeat_password']
             new_params=user_params.except(:repeat_password)
