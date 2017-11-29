@@ -24,6 +24,8 @@ gem 'macaddr'
 gem 'pager_api'
 gem 'will_paginate'
 gem 'kaminari'
+gem 'apipie-rails'
+
 
 
 # Use Capistrano for deployment
