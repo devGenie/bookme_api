@@ -1,7 +1,15 @@
 class UsersController < ApplicationController
     before_action :get_user, only: [:show, :update, :destroy]
     before_action :authenticate_request!, only:[:index, :logout, :show, :update, :destroy]
-    
+
+    def_param_group :user do
+        param :first_name, String, "John"
+        param :last_name, String, "Doe"
+        param :email, String, "johndoor@mail.com"
+        param :password, String, "abcdef"
+        param :repeat_password, String, "abcdef"
+    end
+
     api :GET, "/users", "Show logged in user's profile"
     show true
     error :code => 401, :desc => "User has not been logged in or the request has expired", :meta => {:status => "failed", :message => "Your request is invalid or expired"}
@@ -46,6 +54,7 @@ class UsersController < ApplicationController
 
     api :POST, "/users", "Add user into the system"
     description "Use this API endpoint to add users into the system"
+    param_group :user
     def create
         if user_params['password'] == user_params['repeat_password']
             new_params=user_params.except(:repeat_password)
